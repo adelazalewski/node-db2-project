@@ -1,13 +1,13 @@
 
-exports.seed = function(knex) {
+exports.seed = async function(knex) {
   // Deletes ALL existing entries
-  return knex('cars').del()
-    .then(function () {
+  await knex('cars').truncate()
+    
       // Inserts seed entries
-      return knex('table_name').insert([
-        {colName: 'rowValue1'},
-        {colName: 'rowValue2'},
+      await knex('cars').insert([
+        {manufacturer: 'HG', "model and milage": "BH41J"},
+        {manufacturer: 'S3', "model and milage": "BMHB6"},
         
       ]);
-    });
+    
 };
