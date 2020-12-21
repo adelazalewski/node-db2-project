@@ -22,12 +22,42 @@ router.get("/cars/:id", async (req, res, next) => {
 })
 router.post("/cars", async (req, res, next) => {
 try{
-    const [id] = await db('cars').insert(req.body)
+    const payload = {
+        //send this to thje db
+        //db auto generets the id and the dates
+        manufacturer: req.body.manufacturer,
+        "model and milage": req.body["model and milage"]
+    }
+    const [id] = await db('cars').insert(payload)
 const newCar = await db('cars').where({id}).first()
 res.status(201).json(newCar)
 }catch(err){
+    console.log(err)
     next(err)
 }
+})
+router.delete("/cars/:id", async (req, res, next) => {
+    try{
+        
+await db("cars").where("id", req.params.id).del()
+res.status(204).end()
+    }catch(err){
+        next(err)
+    }
+})
+router.put("/cars/:id", async (req, res, next) => {
+    try{
+        const payload = {
+            //send this to thje db
+            //db auto generets the id and the dates
+            "manufacturer": req.body.manufacturer,
+            "model and milage": req.body["model and milage"]
+        }
+await db("cars").where("id", req.params.id).update(payload)
+const updatedInfo = await db("cars").where("id", req.params.id).first()
+    }catch(err){
+next(err)
+    }
 })
 
 module.exports = router;
