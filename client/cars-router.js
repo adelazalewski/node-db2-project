@@ -50,11 +50,12 @@ router.put("/cars/:id", async (req, res, next) => {
         const payload = {
             //send this to thje db
             //db auto generets the id and the dates
-            "manufacturer": req.body.manufacturer,
+            manufacturer: req.body.manufacturer,
             "model and milage": req.body["model and milage"]
         }
 await db("cars").where("id", req.params.id).update(payload)
 const updatedInfo = await db("cars").where("id", req.params.id).first()
+res.status(200).json(updatedInfo)
     }catch(err){
 next(err)
     }
