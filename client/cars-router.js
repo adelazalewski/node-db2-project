@@ -1,0 +1,64 @@
+const express = require('express');
+const db = require("../data/connect");
+
+const router = express.Router();
+
+router.get("/cars", async (req, res, next) => {
+    try{
+        res.json(await db("cars"))
+    }catch(err){
+        next(err)
+    }
+})
+router.get("/cars/:id", async (req, res, next) => {
+    try{
+        const {id} = req.params
+        const car = await db('cars').where({id}).first()
+
+        res.json(car)
+    }catch(err){
+        next(err)
+    }
+})
+router.post("/cars", async (req, res, next) => {
+try{
+    const payload = {
+        //send this to thje db
+        //db auto generets the id and the dates
+        manufacturer: req.body.manufacturer,
+        "model and milage": req.body["model and milage"]
+    }
+    const [id] = await db('cars').insert(payload)
+const newCar = await db('cars').where({id}).first()
+res.status(201).json(newCar)
+}catch(err){
+    console.log(err)
+    next(err)
+}
+})
+router.delete("/cars/:id", async (req, res, next) => {
+    try{
+        
+await db("cars").where("id", req.params.id).del()
+res.status(204).end()
+    }catch(err){
+        next(err)
+    }
+})
+router.put("/cars/:id", async (req, res, next) => {
+    try{
+        const payload = {
+            //send this to thje db
+            //db auto generets the id and the dates
+            manufacturer: req.body.manufacturer,
+            "model and milage": req.body["model and milage"]
+        }
+await db("cars").where("id", req.params.id).update(payload)
+const updatedInfo = await db("cars").where("id", req.params.id).first()
+res.status(200).json(updatedInfo)
+    }catch(err){
+next(err)
+    }
+})
+
+module.exports = router;
